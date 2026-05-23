@@ -214,71 +214,55 @@ function draw() {
   ctx.clearRect(0, 0, width, height);
   ctx.fillStyle = '#6dc16f';
   ctx.fillRect(0, height - 40, width, 40);
-
+  // desenha plataformas
   platforms.forEach(platform => {
     ctx.fillStyle = platform.type === 'static' ? '#7b4d1f' : '#e4b04b';
     ctx.fillRect(platform.x, platform.y, platform.w, platform.h);
   });
 
-  ctx.fillStyle = '#ffcc33';
-  ctx.fillRect(player.x, player.y, player.w, player.h);
-  ctx.fillStyle = '#1a1a1a';
-  ctx.fillRect(player.x + 8, player.y + 10, 8, 8);
-  ctx.fillRect(player.x + 32, player.y + 10, 8, 8);
+  // configurações para desenhar emojis
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
 
+  // papagaio (player)
+  ctx.font = Math.max(player.w, player.h) + 'px "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif';
+  ctx.fillText('🦜', player.x + player.w / 2, player.y + player.h / 2 + 2);
+
+  // cobras
   snakes.forEach(snake => {
-    ctx.fillStyle = '#2d6a2d';
-    ctx.fillRect(snake.x, snake.y, snake.w, snake.h);
-    ctx.fillStyle = '#a22d2d';
-    ctx.fillRect(snake.x + 8, snake.y - 8, 12, 8);
-    ctx.fillRect(snake.x + snake.w - 20, snake.y - 8, 12, 8);
+    const size = Math.max(snake.w, snake.h);
+    ctx.font = Math.floor(size) + 'px "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif';
+    ctx.fillText('🐍', snake.x + snake.w / 2, snake.y + snake.h / 2);
   });
 
+  // coelhos
   rabbits.forEach(rabbit => {
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(rabbit.x, rabbit.y, rabbit.w, rabbit.h);
-    ctx.fillStyle = '#000';
-    ctx.fillRect(rabbit.x + 10, rabbit.y + 10, 8, 8);
+    const size = Math.max(rabbit.w, rabbit.h);
+    ctx.font = Math.floor(size) + 'px "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif';
+    ctx.fillText('🐇', rabbit.x + rabbit.w / 2, rabbit.y + rabbit.h / 2 + 2);
   });
 
+  // serras (usando emoji de engrenagem como fallback)
   saws.forEach(saw => {
-    ctx.save();
-    ctx.translate(saw.x + saw.w / 2, saw.y + saw.h / 2);
-    ctx.rotate(Date.now() / 200);
-    ctx.fillStyle = '#bbbbbb';
-    ctx.beginPath();
-    ctx.arc(0, 0, saw.w / 2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#333';
-    ctx.lineWidth = 4;
-    for (let i = 0; i < 8; i += 1) {
-      ctx.rotate(Math.PI / 4);
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(saw.w / 2, 0);
-      ctx.stroke();
-    }
-    ctx.restore();
+    const size = Math.max(saw.w, saw.h);
+    ctx.font = Math.floor(size) + 'px "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif';
+    ctx.fillText('⚙️', saw.x + saw.w / 2, saw.y + saw.h / 2);
   });
 
+  // boss lobo
   if (boss.active) {
-    ctx.fillStyle = '#4b4b4b';
-    ctx.fillRect(boss.x, boss.y, boss.w, boss.h);
-    ctx.fillStyle = '#d8d8d8';
-    ctx.fillRect(boss.x + 20, boss.y + 16, 100, 18);
-    ctx.fillStyle = '#222';
-    ctx.fillRect(boss.x + 28, boss.y + 22, 20, 8);
-    ctx.fillRect(boss.x + 92, boss.y + 22, 20, 8);
-    ctx.fillStyle = '#ff4d4d';
-    for (let i = 0; i < boss.health; i += 1) {
-      ctx.fillRect(boss.x + 12 + i * 22, boss.y - 14, 16, 10);
-    }
+    const bsize = Math.min( Math.max(boss.w, boss.h), 120 );
+    ctx.font = Math.floor(bsize) + 'px "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif';
+    ctx.fillText('🐺', boss.x + boss.w / 2, boss.y + boss.h / 2 + 4);
+
+    // desenha ataques do boss como bolas
     boss.attacks.forEach(attack => {
-      ctx.fillStyle = '#922';
-      ctx.fillRect(attack.x, attack.y, attack.w, attack.h);
+      ctx.font = Math.max(attack.w, attack.h) + 'px "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif';
+      ctx.fillText('🔥', attack.x + attack.w / 2, attack.y + attack.h / 2);
     });
   }
 
+  // overlay quando o jogo não começou
   if (!gameStarted) {
     ctx.fillStyle = 'rgba(0,0,0,0.35)';
     ctx.fillRect(0, 0, width, height);
